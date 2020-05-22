@@ -40,12 +40,14 @@ def project(X, output_range=(0, 1), absmax=None, input_is_positive_only=False):
     :return: The tensor with the values project into output range.
     """
 
+    
     if absmax is None:
         absmax = np.max(np.abs(X),
-                        axis=tuple(range(1, len(X.shape))))
+                        axis=tuple(range(1, len(X.shape))),
+                        keepdims=True)
     absmax = np.asarray(absmax)
+    mask = absmax.squeeze() != 0
 
-    mask = absmax != 0
     if mask.sum() > 0:
         X[mask] /= absmax[mask]
 
