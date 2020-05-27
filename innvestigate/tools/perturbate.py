@@ -125,9 +125,12 @@ class Perturbation:
         # A single region (at region_x, region_y in sample) should be in mask[sample, channel, region_x, :, region_y, :]
 
         x_perturbated = self.reshape_to_regions(x)
-        for sample_idx, channel_idx, region_row, region_col in np.ndindex(perturbation_mask_regions.shape):
+
+        region_shape = list(perturbation_mask_regions.shape)
+        region_shape[1] = x_perturbated.shape[1]
+        for sample_idx, channel_idx, region_row, region_col in np.ndindex(tuple(region_shape)):
             region = x_perturbated[sample_idx, channel_idx, region_row, :, region_col, :]
-            region_mask = perturbation_mask_regions[sample_idx, channel_idx, region_row, region_col]
+            region_mask = perturbation_mask_regions[sample_idx, 0, region_row, region_col]
             if region_mask:
                 x_perturbated[sample_idx, channel_idx, region_row, :, region_col, :] = self.perturbation_function(
                     region)
